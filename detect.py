@@ -1,4 +1,9 @@
 # YOLOv5 🚀 by Ultralytics, GPL-3.0 license
+# Modified by: Michael Boudreaux,
+#              Praneetha Gobburi,
+#              Hunter Guidry
+#
+#
 """
 Run YOLOv5 detection inference on images, videos, directories, globs, YouTube, webcam, streams, etc.
 
@@ -76,6 +81,7 @@ def run(
         hide_conf=False,  # hide confidences
         half=False,  # use FP16 half-precision inference
         dnn=False,  # use OpenCV DNN for ONNX inference
+        send_to_robot=False,
         vid_stride=1,  # video frame-rate stride
 ):
     source = str(source)
@@ -181,6 +187,12 @@ def run(
                     cv2.resizeWindow(str(p), im0.shape[1], im0.shape[0])
                 cv2.imshow(str(p), im0)
                 cv2.waitKey(1)  # 1 millisecond
+            
+            # Send values to robot
+            if send_to_robot:
+                print("Sending information to robot")
+            else:
+                print("Not sending information")
 
             # Save results (image with detections)
             if save_img:
@@ -242,6 +254,7 @@ def parse_opt():
     parser.add_argument('--hide-conf', default=False, action='store_true', help='hide confidences')
     parser.add_argument('--half', action='store_true', help='use FP16 half-precision inference')
     parser.add_argument('--dnn', action='store_true', help='use OpenCV DNN for ONNX inference')
+    parser.add_argument('--send-to-robot', action='store_true', help='send the video frame and prediciton centers to the robot')
     parser.add_argument('--vid-stride', type=int, default=1, help='video frame-rate stride')
     opt = parser.parse_args()
     opt.imgsz *= 2 if len(opt.imgsz) == 1 else 1  # expand
